@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,6 +29,20 @@ namespace WebAppAuthDemo
 
             var users = new Dictionary<string, string> { { "Chris", "password" } };
             services.AddSingleton<IUserService>(new DummyUserService(users));
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme =
+                    CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme =
+                    CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme =
+                    CookieAuthenticationDefaults.AuthenticationScheme;
+            })
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/auth/signin";
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,6 +60,8 @@ namespace WebAppAuthDemo
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseAuthentication();
 
             app.UseRouting();
 

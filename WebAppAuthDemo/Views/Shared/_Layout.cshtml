@@ -8,6 +8,34 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
+    <header class="border-bottom">
+        <div class="container">
+            <div class="header clearfix">
+                <nav>
+                    <ul class="nav nav-pills float-right">
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" href="/userinformation">User Information</a>
+                            </li>
+                            <li class="nav-item">
+                                <form method="post">
+                                    <button type="submit" class="nav-link active btn btn-primary">Sign Out</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link active" asp-controller="Auth" asp-action="SignIn">Sign In</a>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+                <h3 class="text-muted">Demo</h3>
+            </div>
+        </div>
+    </header>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
@@ -34,7 +62,6 @@
             @RenderBody()
         </main>
     </div>
-
     <footer class="border-top footer text-muted">
         <div class="container">
             &copy; 2020 - WebAppAuthDemo - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
