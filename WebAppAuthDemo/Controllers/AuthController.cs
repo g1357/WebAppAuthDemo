@@ -44,6 +44,15 @@ namespace WebAppAuthDemo.Controllers
             return View(model);
         }
 
+        [Route("signout")]
+        [HttpPost]
+        public async Task <IActionResult> SignOut()
+        {
+            await HttpContext.SignOutAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Index", "Home");
+        }
+
         public async Task SignInUser(string username)
         {
             var claims = new List<Claim>
