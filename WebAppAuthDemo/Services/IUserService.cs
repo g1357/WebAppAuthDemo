@@ -8,6 +8,7 @@ namespace WebAppAuthDemo.Services
     public interface IUserService
     {
         Task<bool> ValidateCredentials(string userbane, string password, out User user);
+        Task<bool> AddUser(string username, string password);
     }
 
     public class User

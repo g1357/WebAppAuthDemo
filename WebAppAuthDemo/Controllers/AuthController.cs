@@ -29,7 +29,8 @@ namespace WebAppAuthDemo.Controllers
         [Route("signin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignIn(SignInModel model)
+        public async Task<IActionResult> SignIn(SignInModel model,
+            string returnUrl = null)
         {
             if (ModelState.IsValid)
             {
@@ -38,6 +39,10 @@ namespace WebAppAuthDemo.Controllers
                     model.Username, model.Password, out user))
                 {
                     await SignInUser(user.Username);
+                    if (returnUrl != null)
+                    {
+                        return Redirect(returnUrl);
+                    }
                     return RedirectToAction("Index", "Home");
                 }
             }
@@ -51,6 +56,29 @@ namespace WebAppAuthDemo.Controllers
             await HttpContext.SignOutAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
+        }
+
+        [Route("signup")]
+        public IActionResult SignUp()
+        {
+            return View(new SignUpModel());
+        }
+
+        [Route("signup")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SignUp(SignUpModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                if (await _userService.AddUser(model.Username, model.Password))
+                {
+                    await SignInUser(model.Username);
+                    return RedirectToAction("Index", "Home");
+                }
+                ModelState.AddModelError("Error", "Could not add user. Username alresdy in use...");
+            }
+            return View(model);
         }
 
         public async Task SignInUser(string username)
